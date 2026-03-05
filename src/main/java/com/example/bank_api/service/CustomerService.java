@@ -6,7 +6,6 @@ import com.example.bank_api.model.Customer;
 import com.example.bank_api.model.dto.GetCustomerDto;
 import com.example.bank_api.repository.BalanceRepository;
 import com.example.bank_api.repository.CustomerRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class CustomerService {
 
     CustomerRepository customerRepository;
