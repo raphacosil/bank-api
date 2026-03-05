@@ -1,5 +1,7 @@
 package com.example.bank_api.service;
 
+import com.example.bank_api.client.ApiClient;
+import com.example.bank_api.client.dto.SendNotificationResponse;
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.exception.UnprocessableEntityException;
 import com.example.bank_api.model.Balance;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class TransferenceService {
     TransferenceRepository transferenceRepository;
     BalanceRepository balanceRepository;
+    ApiClient apiClient;
 
     public void transfer(Long payerId, Long receiverId, Double amount){
         Optional<Balance> payerBalance = balanceRepository.findByCustomerId(payerId);
@@ -41,7 +44,13 @@ public class TransferenceService {
         transference.setReceiver_id(receiverId);
         transference.setAmount(amount);
 
-        transferenceRepository.save(transference);
+        Transference newTransference = transferenceRepository.save(transference);
+
+        if(!apiClient.authorize().getData().getAuthorization()){
+            refund(newTransference.getId());
+        }
+
+        sendNotification();
     }
 
     public void refund(Long transferenceId){
@@ -64,6 +73,14 @@ public class TransferenceService {
         balanceRepository.save(receiverBalance.get());
 
         transferenceRepository.delete(transference);
+    }
+
+    private void sendNotification(){
+        String status;
+        do {
+            SendNotificationResponse response = apiClient.sendNotification();
+            status = response.getStatus();
+        } while (status.equals("fail"));
     }
 
     public List<Transference> findAll(){
