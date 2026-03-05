@@ -1,12 +1,12 @@
 package com.example.bank_api.model;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Date;
 
 @Setter
 @Getter
@@ -14,6 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "transference")
 public class Transference {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @JoinColumn
     @OneToOne(mappedBy = "payer_id")
@@ -22,4 +23,6 @@ public class Transference {
     @OneToOne(mappedBy = "receiver_id")
     private Long receiver_id;
     private Double amount;
+    @Column(name = "created_at")
+    private Date createdAt;
 }

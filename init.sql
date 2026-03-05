@@ -31,6 +31,7 @@ CREATE TABLE transference (
     payer_id BIGINT NOT NULL,
     receiver_id BIGINT NOT NULL,
     amount DECIMAL(15,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_transference_payer
         FOREIGN KEY (payer_id)
