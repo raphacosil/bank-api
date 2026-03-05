@@ -19,17 +19,21 @@ public class TransferenceService {
     BalanceRepository balanceRepository;
 
     public void transfer(Long payerId, Long receiverId, Double amount){
-        Balance payerBalance = balanceRepository.findByCustomerId(payerId);
-        Balance receiverBalance = balanceRepository.findByCustomerId(receiverId);
-        if (payerBalance.getAmount() < amount){
+        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(payerId);
+        if (payerBalance.isEmpty()) throw new NotFoundException();
+
+        Optional<Balance> receiverBalance = balanceRepository.findByCustomerId(receiverId);
+        if (receiverBalance.isEmpty()) throw new NotFoundException();
+
+        if (payerBalance.get().getAmount() < amount){
             throw new UnprocessableEntityException("Not enough balance");
         }
 
-        payerBalance.setAmount(payerBalance.getAmount() - amount);
-        receiverBalance.setAmount(receiverBalance.getAmount() + amount);
+        payerBalance.get().setAmount(payerBalance.get().getAmount() - amount);
+        receiverBalance.get().setAmount(receiverBalance.get().getAmount() + amount);
 
-        balanceRepository.save(payerBalance);
-        balanceRepository.save(receiverBalance);
+        balanceRepository.save(payerBalance.get());
+        balanceRepository.save(receiverBalance.get());
 
         Transference transference = new Transference();
 
@@ -43,17 +47,21 @@ public class TransferenceService {
     public void refund(Long transferenceId){
         Transference transference = transferenceRepository.getReferenceById(transferenceId);
 
-        Balance payerBalance = balanceRepository.findByCustomerId(transference.getPayer_id());
-        Balance receiverBalance = balanceRepository.findByCustomerId(transference.getReceiver_id());
-        if (receiverBalance.getAmount() < transference.getAmount()){
+        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(transference.getPayer_id());
+        if (payerBalance.isEmpty()) throw new NotFoundException();
+
+        Optional<Balance> receiverBalance = balanceRepository.findByCustomerId(transference.getReceiver_id());
+        if (receiverBalance.isEmpty()) throw new NotFoundException();
+
+        if (receiverBalance.get().getAmount() < transference.getAmount()){
             throw new UnprocessableEntityException("Not enough balance");
         }
 
-        payerBalance.setAmount(payerBalance.getAmount() + transference.getAmount());
-        receiverBalance.setAmount(receiverBalance.getAmount() - transference.getAmount());
+        payerBalance.get().setAmount(payerBalance.get().getAmount() + transference.getAmount());
+        receiverBalance.get().setAmount(receiverBalance.get().getAmount() - transference.getAmount());
 
-        balanceRepository.save(payerBalance);
-        balanceRepository.save(receiverBalance);
+        balanceRepository.save(payerBalance.get());
+        balanceRepository.save(receiverBalance.get());
 
         transferenceRepository.delete(transference);
     }
