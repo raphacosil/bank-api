@@ -28,19 +28,19 @@ CREATE TABLE balance (
 
 CREATE TABLE transference (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    payer_id BIGINT NOT NULL,
-    receiver_id BIGINT NOT NULL,
-    amount DECIMAL(15,2) NOT NULL,
+    payer BIGINT NOT NULL,
+    payee BIGINT NOT NULL,
+    value DECIMAL(15,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_transference_payer
-        FOREIGN KEY (payer_id)
+        FOREIGN KEY (payer)
         REFERENCES customer(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
 
     CONSTRAINT fk_transference_receiver
-        FOREIGN KEY (receiver_id)
+        FOREIGN KEY (payee)
         REFERENCES customer(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE

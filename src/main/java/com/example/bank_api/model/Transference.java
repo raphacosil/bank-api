@@ -18,11 +18,11 @@ public class Transference {
     private Long id;
     @JoinColumn
     @OneToOne(mappedBy = "payer_id")
-    private Long payer_id;
+    private Long payer;
     @JoinColumn
     @OneToOne(mappedBy = "receiver_id")
-    private Long receiver_id;
-    private Double amount;
+    private Long payee;
+    private Double value;
     @Column(name = "created_at")
     private Date createdAt;
 }
