@@ -3,7 +3,6 @@ package com.example.bank_api.service;
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.model.Balance;
 import com.example.bank_api.repository.BalanceRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
