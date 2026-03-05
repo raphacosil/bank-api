@@ -16,6 +16,6 @@ public class Balance {
     private Long id;
     @JoinColumn
     @OneToOne(mappedBy = "customer_id")
-    private String customerId;
+    private Long customerId;
     private Double amount;
 }
