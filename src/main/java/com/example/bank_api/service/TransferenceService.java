@@ -7,6 +7,7 @@ import com.example.bank_api.exception.UnprocessableEntityException;
 import com.example.bank_api.model.Balance;
 import com.example.bank_api.model.Transference;
 import com.example.bank_api.repository.BalanceRepository;
+import com.example.bank_api.repository.CustomerRepository;
 import com.example.bank_api.repository.TransferenceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,30 +20,33 @@ import java.util.Optional;
 public class TransferenceService {
     TransferenceRepository transferenceRepository;
     BalanceRepository balanceRepository;
+    CustomerRepository customerRepository;
     ApiClient apiClient;
 
-    public void transfer(Long payerId, Long receiverId, Double amount){
-        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(payerId);
-        if (payerBalance.isEmpty()) throw new NotFoundException();
+    public void transfer(Transference transference){
+        if (transference.getPayer().equals(transference.getPayee()))
+            throw new UnprocessableEntityException("Payer and payee should be different");
 
-        Optional<Balance> receiverBalance = balanceRepository.findByCustomerId(receiverId);
-        if (receiverBalance.isEmpty()) throw new NotFoundException();
+        if (customerRepository.findIsBusinessById(transference.getPayer()))
+            throw new UnprocessableEntityException("Payer should not be a business");
 
-        if (payerBalance.get().getAmount() < amount){
+        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(transference.getPayer());
+        if (payerBalance.isEmpty())
+            throw new NotFoundException();
+
+        Optional<Balance> payeeBalance = balanceRepository.findByCustomerId(transference.getPayee());
+        if (payeeBalance.isEmpty())
+            throw new NotFoundException();
+
+        if (payerBalance.get().getAmount() < transference.getValue()){
             throw new UnprocessableEntityException("Not enough balance");
         }
 
-        payerBalance.get().setAmount(payerBalance.get().getAmount() - amount);
-        receiverBalance.get().setAmount(receiverBalance.get().getAmount() + amount);
+        payerBalance.get().setAmount(payerBalance.get().getAmount() - transference.getValue());
+        payeeBalance.get().setAmount(payeeBalance.get().getAmount() + transference.getValue());
 
         balanceRepository.save(payerBalance.get());
-        balanceRepository.save(receiverBalance.get());
-
-        Transference transference = new Transference();
-
-        transference.setPayer_id(payerId);
-        transference.setReceiver_id(receiverId);
-        transference.setAmount(amount);
+        balanceRepository.save(payeeBalance.get());
 
         Transference newTransference = transferenceRepository.save(transference);
 
@@ -56,21 +60,21 @@ public class TransferenceService {
     public void refund(Long transferenceId){
         Transference transference = transferenceRepository.getReferenceById(transferenceId);
 
-        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(transference.getPayer_id());
+        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(transference.getPayer());
         if (payerBalance.isEmpty()) throw new NotFoundException();
 
-        Optional<Balance> receiverBalance = balanceRepository.findByCustomerId(transference.getReceiver_id());
-        if (receiverBalance.isEmpty()) throw new NotFoundException();
+        Optional<Balance> payeeBalance = balanceRepository.findByCustomerId(transference.getPayee());
+        if (payeeBalance.isEmpty()) throw new NotFoundException();
 
-        if (receiverBalance.get().getAmount() < transference.getAmount()){
+        if (payeeBalance.get().getAmount() < transference.getValue()){
             throw new UnprocessableEntityException("Not enough balance");
         }
 
-        payerBalance.get().setAmount(payerBalance.get().getAmount() + transference.getAmount());
-        receiverBalance.get().setAmount(receiverBalance.get().getAmount() - transference.getAmount());
+        payerBalance.get().setAmount(payerBalance.get().getAmount() + transference.getValue());
+        payeeBalance.get().setAmount(payeeBalance.get().getAmount() - transference.getValue());
 
         balanceRepository.save(payerBalance.get());
-        balanceRepository.save(receiverBalance.get());
+        balanceRepository.save(payeeBalance.get());
 
         transferenceRepository.delete(transference);
     }

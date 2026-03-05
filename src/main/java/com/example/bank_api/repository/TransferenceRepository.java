@@ -1,6 +1,5 @@
 package com.example.bank_api.repository;
 
-import com.example.bank_api.model.Balance;
 import com.example.bank_api.model.Transference;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
