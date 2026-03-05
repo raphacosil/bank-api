@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: bank-api
+
+  data:
+    mongodb:
+      host: ${DATABASE_HOST}
+      port: ${DATABASE_PORT}
+      database: ${DATABASE_NAME}
+      username: ${DATABASE_USERNAME}
+      password: ${DATABASE_PASSWORD}
