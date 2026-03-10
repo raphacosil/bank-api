@@ -1,6 +1,6 @@
 package com.example.bank_api.controller;
 
-import com.example.bank_api.contract.CustomerContract;
+import com.example.bank_api.controller.contract.CustomerContract;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Customer;
 import com.example.bank_api.model.dto.GetCustomerDto;

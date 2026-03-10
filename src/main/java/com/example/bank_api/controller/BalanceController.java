@@ -1,6 +1,6 @@
 package com.example.bank_api.controller;
 
-import com.example.bank_api.contract.BalanceContract;
+import com.example.bank_api.controller.contract.BalanceContract;
 import com.example.bank_api.model.Balance;
 import com.example.bank_api.service.BalanceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/balance")
 public class BalanceController implements BalanceContract {
+
     BalanceService balanceService;
+
     @Override
     public ResponseEntity<Balance> findById(Long id) {
         return ResponseEntity.ok(balanceService.getBalanceByCustomer(id));

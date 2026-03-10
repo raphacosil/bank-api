@@ -1,6 +1,6 @@
 package com.example.bank_api.controller;
 
-import com.example.bank_api.contract.TransferenceContract;
+import com.example.bank_api.controller.contract.TransferenceContract;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Transference;
 import com.example.bank_api.service.TransferenceService;
@@ -37,6 +37,11 @@ public class TransferenceController implements TransferenceContract {
         transferenceService.refund(transferenceId);
 
         return ResponseEntity.status(200).build();
+    }
+
+    @Override
+    public ResponseEntity<List<Transference>> findAll() {
+        return ResponseEntity.ok(transferenceService.findAll());
     }
 
     @Override

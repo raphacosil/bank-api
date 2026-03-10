@@ -1,7 +1,7 @@
 package com.example.bank_api.service;
 
-import com.example.bank_api.client.ApiClient;
-import com.example.bank_api.client.dto.SendNotificationResponse;
+import com.example.bank_api.gateway.ApiGateway;
+import com.example.bank_api.gateway.dto.SendNotificationResponse;
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.exception.UnprocessableEntityException;
 import com.example.bank_api.model.Balance;
@@ -19,7 +19,7 @@ public class TransferenceService {
     TransferenceRepository transferenceRepository;
     BalanceRepository balanceRepository;
     CustomerRepository customerRepository;
-    ApiClient apiClient;
+    ApiGateway apiGateway;
 
     public void transfer(Transference transference){
         if (transference.getPayer().equals(transference.getPayee()))
@@ -48,7 +48,7 @@ public class TransferenceService {
 
         Transference newTransference = transferenceRepository.save(transference);
 
-        if(!apiClient.authorize().getData().getAuthorization()){
+        if(!apiGateway.authorize().getData().getAuthorization()){
             refund(newTransference.getId());
         }
 
@@ -80,7 +80,7 @@ public class TransferenceService {
     private void sendNotification(){
         String status;
         do {
-            SendNotificationResponse response = apiClient.sendNotification();
+            SendNotificationResponse response = apiGateway.sendNotification();
             status = response.getStatus();
         } while (status.equals("fail"));
     }

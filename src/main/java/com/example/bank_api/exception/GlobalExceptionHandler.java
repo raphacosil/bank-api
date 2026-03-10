@@ -1,9 +1,5 @@
-package com.example.bank_api.config;
+package com.example.bank_api.exception;
 
-import com.example.bank_api.exception.BadRequestException;
-import com.example.bank_api.exception.InternalServerException;
-import com.example.bank_api.exception.NotFoundException;
-import com.example.bank_api.exception.UnprocessableEntityException;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +20,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(InternalServerException.class)
-    public ResponseEntity<Object> handleBadRequestException(InternalServerException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<Object> handleInternalServerException(InternalServerException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
     @ExceptionHandler(UnprocessableEntityException.class)
