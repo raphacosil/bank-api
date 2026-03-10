@@ -1,4 +1,4 @@
-package com.example.bank_api.contract;
+package com.example.bank_api.controller.contract;
 
 import com.example.bank_api.model.Transference;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +34,14 @@ public interface TransferenceContract {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<Void> refund(@PathVariable(value = "id") Long transferenceId);
+
+    @GetMapping("/")
+    @Operation(summary = "Get all transferences")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transferences retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    ResponseEntity<List<Transference>> findAll();
 
     @GetMapping("/{id}")
     @Operation(summary = "Get transference by id")

@@ -1,4 +1,4 @@
-package com.example.bank_api.contract;
+package com.example.bank_api.controller.contract;
 
 import com.example.bank_api.model.Balance;
 import io.swagger.v3.oas.annotations.Operation;
