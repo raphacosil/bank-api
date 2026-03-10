@@ -1,16 +1,16 @@
-package com.example.bank_api.client;
+package com.example.bank_api.gateway;
 
-import com.example.bank_api.client.dto.AuthorizeResponse;
-import com.example.bank_api.client.dto.SendNotificationResponse;
+import com.example.bank_api.gateway.dto.AuthorizeResponse;
+import com.example.bank_api.gateway.dto.SendNotificationResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-public class ApiClient {
+public class ApiGateway {
 
     private final WebClient webClient;
 
-    public ApiClient(WebClient.Builder webClientBuilder) {
+    public ApiGateway(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder
                 .baseUrl("https://util.devi.tools/api")
                 .build();
