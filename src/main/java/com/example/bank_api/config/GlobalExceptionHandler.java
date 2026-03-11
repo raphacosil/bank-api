@@ -1,5 +1,9 @@
-package com.example.bank_api.exception;
+package com.example.bank_api.config;
 
+import com.example.bank_api.exception.BadRequestException;
+import com.example.bank_api.exception.InternalServerException;
+import com.example.bank_api.exception.NotFoundException;
+import com.example.bank_api.exception.UnprocessableEntityException;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
