@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SendNotificationResponse {
     String status;
-    SendNotificationResponseData notificationData;
+    SendNotificationResponseData data;
 }

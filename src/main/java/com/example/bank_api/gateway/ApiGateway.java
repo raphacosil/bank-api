@@ -11,9 +11,7 @@ public class ApiGateway {
     private final WebClient webClient;
 
     public ApiGateway(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder
-                .baseUrl("https://util.devi.tools/api")
-                .build();
+        this.webClient = webClientBuilder.build();
     }
 
     public AuthorizeResponse authorize() {
