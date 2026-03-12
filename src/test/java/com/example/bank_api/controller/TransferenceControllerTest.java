@@ -1,6 +1,7 @@
 package com.example.bank_api.controller;
 
 
+import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Transference;
 import com.example.bank_api.service.TransferenceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +13,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.sql.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class TransferenceControllerTest {
@@ -32,6 +35,9 @@ public class TransferenceControllerTest {
 
     @Mock
     BindingResult bindingResult;
+
+    @Mock
+    private FieldError fieldError;
 
     Transference transference;
 
@@ -119,5 +125,17 @@ public class TransferenceControllerTest {
         ResponseEntity<Void> response = transferenceController.transfer(transference, bindingResult);
 
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
+    }
+
+    @Test
+    void whenTransfer_shouldReturn400() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldError()).thenReturn(fieldError);
+        when(fieldError.getDefaultMessage()).thenReturn("Nome é obrigatório");
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> transferenceController.transfer(transference, bindingResult));
+
+        assertEquals("Bad request Nome é obrigatório", exception.getMessage());
+        verify(transferenceService, times(0)).transfer(any(Transference.class));
     }
 }

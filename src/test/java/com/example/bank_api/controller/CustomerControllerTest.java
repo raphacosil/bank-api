@@ -1,5 +1,6 @@
 package com.example.bank_api.controller;
 
+import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Customer;
 import com.example.bank_api.model.dto.GetCustomerDto;
 import com.example.bank_api.service.CustomerService;
@@ -12,9 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,6 +34,9 @@ public class CustomerControllerTest {
 
     @Mock
     BindingResult bindingResult;
+
+    @Mock
+    private FieldError fieldError;
 
     @BeforeEach
     void setUp() {
@@ -55,6 +61,18 @@ public class CustomerControllerTest {
     }
 
     @Test
+    void whenSave_ShouldReturn400() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldError()).thenReturn(fieldError);
+        when(fieldError.getDefaultMessage()).thenReturn("Nome é obrigatório");
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () ->  customerController.save(customer, bindingResult));
+
+        assertEquals("Bad request Nome é obrigatório", exception.getMessage());
+        verify(customerService, times(0)).save (customer);
+    }
+
+    @Test
     void whenUpdate_ShouldReturn200() {
         doNothing().when(customerService).update(1L, customer);
 
@@ -62,6 +80,18 @@ public class CustomerControllerTest {
 
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
         verify(customerService, times(1)).update (1L, customer);
+    }
+
+    @Test
+    void whenUpdate_ShouldReturn400() {
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getFieldError()).thenReturn(fieldError);
+        when(fieldError.getDefaultMessage()).thenReturn("Nome é obrigatório");
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () ->  customerController.update(1L, customer, bindingResult));
+
+        assertEquals("Bad request Nome é obrigatório", exception.getMessage());
+        verify(customerService, times(0)).update(1L, customer);
     }
 
     @Test
