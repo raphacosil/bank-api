@@ -102,34 +102,10 @@ public class TransferenceService {
         return transferenceRepository.findByCustomer(customerId);
     }
 
-    public List<Transference> findBetweenCustomers(Long firstCustomerId, Long secondCustomerId){
+    public List<Transference> findBetweenCustomers(Long firstCustomerId, Long secondCustomerId) {
+        if (firstCustomerId.equals(secondCustomerId)) {
+            throw new UnprocessableEntityException("Customers should be different");
+        }
         return transferenceRepository.findByCustomer(firstCustomerId, secondCustomerId);
     }
-
-//    public void transfer(Long payerId, Long receiverId, Double amount){
-//        Double payerBalance = transferenceRepository.getBalance(payerId);
-//        if (payerBalance < amount){
-//            throw new UnprocessableEntityException("Not enough balance");
-//        }
-//
-//        Transference transference = new Transference();
-//
-//        transference.setPayer_id(payerId);
-//        transference.setReceiver_id(receiverId);
-//        transference.setAmount(amount);
-//
-//        transferenceRepository.save(transference);
-//    }
-//
-//    public void refund(Long transferenceId){
-//        Transference transference = transferenceRepository.getReferenceById(transferenceId);
-//
-//        Double receiverBalance = transferenceRepository.getBalance(transference.getReceiver_id());
-//
-//        if (receiverBalance < transference.getAmount()){
-//            throw new UnprocessableEntityException("Not enough balance");
-//        }
-//
-//        transferenceRepository.delete(transference);
-//    }
 }
