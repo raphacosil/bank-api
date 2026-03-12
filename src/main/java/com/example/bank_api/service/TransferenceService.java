@@ -56,25 +56,26 @@ public class TransferenceService {
     }
 
     public void refund(Long transferenceId){
-        Transference transference = transferenceRepository.getReferenceById(transferenceId);
+        Optional<Transference> transference = transferenceRepository.findById(transferenceId);
+        if (transference.isEmpty()) throw new NotFoundException();
 
-        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(transference.getPayer());
+        Optional<Balance> payerBalance = balanceRepository.findByCustomerId(transference.get().getPayer());
         if (payerBalance.isEmpty()) throw new NotFoundException();
 
-        Optional<Balance> payeeBalance = balanceRepository.findByCustomerId(transference.getPayee());
+        Optional<Balance> payeeBalance = balanceRepository.findByCustomerId(transference.get().getPayee());
         if (payeeBalance.isEmpty()) throw new NotFoundException();
 
-        if (payeeBalance.get().getAmount() < transference.getValue()){
+        if (payeeBalance.get().getAmount() < transference.get().getValue()){
             throw new UnprocessableEntityException("Not enough balance");
         }
 
-        payerBalance.get().setAmount(payerBalance.get().getAmount() + transference.getValue());
-        payeeBalance.get().setAmount(payeeBalance.get().getAmount() - transference.getValue());
+        payerBalance.get().setAmount(payerBalance.get().getAmount() + transference.get().getValue());
+        payeeBalance.get().setAmount(payeeBalance.get().getAmount() - transference.get().getValue());
 
         balanceRepository.save(payerBalance.get());
         balanceRepository.save(payeeBalance.get());
 
-        transferenceRepository.delete(transference);
+        transferenceRepository.delete(transference.get());
     }
 
     private void sendNotification(){
