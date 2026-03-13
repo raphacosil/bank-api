@@ -2,8 +2,12 @@ package com.example.bank_api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(
+		properties = "external.util-api.base-url=http://localhost"
+)
+@ActiveProfiles("test")
 class ApplicationTests {
 
 	@Test

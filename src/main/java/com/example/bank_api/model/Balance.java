@@ -11,13 +11,14 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name = "balance")
 public class Balance {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    @JoinColumn
-    @OneToOne(mappedBy = "customer_id")
+    @Column(name = "customer_id")
     private Long customerId;
     @NotNull
     private Double amount;
