@@ -3,6 +3,9 @@ package com.example.bank_api.service;
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.exception.UnprocessableEntityException;
 import com.example.bank_api.gateway.ApiGateway;
+import com.example.bank_api.gateway.dto.AuthorizeResponse;
+import com.example.bank_api.gateway.dto.AuthorizeResponseData;
+import com.example.bank_api.gateway.dto.SendNotificationResponse;
 import com.example.bank_api.model.Balance;
 import com.example.bank_api.model.Transference;
 import com.example.bank_api.repository.BalanceRepository;
@@ -111,7 +114,6 @@ public class TransferenceServiceTest {
 
     @Test
     void whenRefundAndTransferenceEmpty_thenThrowNotFoundException() {
-        Transference transference = new Transference(1L, 1L, 2L, 100.00, null);
         when(transferenceRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> transferenceService.refund(1L));
@@ -122,7 +124,7 @@ public class TransferenceServiceTest {
 
 
     @Test
-    void whenUpdateAndPayerBalanceIsNotFound_thenThrowNotFoundException() {
+    void whenRefundAAndPayerBalanceIsNotFound_thenThrowNotFoundException() {
         Transference transference = new Transference(1L, 1L, 2L, 100.00, null);
         Optional<Transference> transferenceOptional = Optional.of(transference);
         when(transferenceRepository.findById(1L)).thenReturn(transferenceOptional);
@@ -132,11 +134,11 @@ public class TransferenceServiceTest {
         assertThrows(NotFoundException.class, () -> transferenceService.refund(1L));
 
         verify(balanceRepository, times(0)).save(any(Balance.class));
-        verify(transferenceRepository, times(0)).save(any(Transference.class));
+        verify(transferenceRepository, times(0)).delete(any(Transference.class));
     }
 
     @Test
-    void whenUpdateAndPayeeBalanceIsNotFound_thenThrowNotFoundException() {
+    void whenRefundAAndPayeeBalanceIsNotFound_thenThrowNotFoundException() {
         Transference transference = new Transference(1L, 1L, 2L, 100.00, null);
         Optional<Transference> transferenceOptional = Optional.of(transference);
 
@@ -152,11 +154,11 @@ public class TransferenceServiceTest {
         assertThrows(NotFoundException.class, () -> transferenceService.refund(1L));
 
         verify(balanceRepository, times(0)).save(any(Balance.class));
-        verify(transferenceRepository, times(0)).save(any(Transference.class));
+        verify(transferenceRepository, times(0)).delete(any(Transference.class));
     }
 
     @Test
-    void whenUpdateAndNotEnoughBalance_thenThrowUnprocessableEntityException() {
+    void whenRefundAndNotEnoughBalance_thenThrowUnprocessableEntityException() {
         Transference transference = new Transference(1L, 1L, 2L, 150.00, null);
         Balance balance = new Balance(1L, 1L, 100.00);
         Optional<Balance> balanceOptional = Optional.of(balance);
@@ -171,9 +173,139 @@ public class TransferenceServiceTest {
         UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> transferenceService.refund(1L));
 
         verify(balanceRepository, times(0)).save(any(Balance.class));
-        verify(transferenceRepository, times(0)).save(any(Transference.class));
+        verify(transferenceRepository, times(0)).delete(any(Transference.class));
 
         assertEquals("Unprocessable entity Not enough balance", exception.getMessage());
+    }
+
+    @Test
+    void whenTransfer_thenReturnVoid() {
+        Transference transference = new Transference(1L, 1L, 2L, 100.00, null);
+        Balance balance = new Balance(1L, 1L, 100.00);
+        Optional<Balance> balanceOptional = Optional.of(balance);
+
+        when(balanceRepository.findByCustomerId(1L)).thenReturn(balanceOptional);
+        when(balanceRepository.findByCustomerId(2L)).thenReturn(balanceOptional);
+
+        when(balanceRepository.save(any())).thenReturn(balance);
+
+        AuthorizeResponse authorizeResponse = new AuthorizeResponse(
+                "success",
+                new AuthorizeResponseData(true)
+        );
+        when(apiGateway.authorize()).thenReturn(authorizeResponse);
+
+        SendNotificationResponse sendNotificationResponse = mock(SendNotificationResponse.class);
+        when(sendNotificationResponse.getStatus()).thenReturn("success");
+        when(apiGateway.sendNotification()).thenReturn(sendNotificationResponse);
+
+        transferenceService.transfer(transference);
+
+        verify(balanceRepository, times(2)).findByCustomerId(any(Long.class));
+        verify(balanceRepository, times(2)).save(any(Balance.class));
+        verify(transferenceRepository, times(1)).save(any(Transference.class));
+        verify(apiGateway, times(1)).authorize();
+        verify(apiGateway, times(1)).sendNotification();
+    }
+
+    @Test
+    void whenTransferAndAuthorizeFalse_thenRefund() {
+        Transference transference = new Transference(1L, 1L, 2L, 100.00, null);
+        Optional<Transference> transferenceOptional = Optional.of(transference);
+        Balance balance = new Balance(1L, 1L, 100.00);
+        Optional<Balance> balanceOptional = Optional.of(balance);
+
+        when(balanceRepository.findByCustomerId(1L)).thenReturn(balanceOptional);
+        when(balanceRepository.findByCustomerId(2L)).thenReturn(balanceOptional);
+        when(balanceRepository.save(any())).thenReturn(balance);
+
+        AuthorizeResponse authorizeResponse = new AuthorizeResponse("fail", new AuthorizeResponseData(false));
+        when(apiGateway.authorize()).thenReturn(authorizeResponse);
+
+        SendNotificationResponse sendNotificationResponse = mock(SendNotificationResponse.class);
+        when(sendNotificationResponse.getStatus()).thenReturn("success");
+        when(apiGateway.sendNotification()).thenReturn(sendNotificationResponse);
+
+        when(transferenceRepository.save(transference)).thenReturn(transference);
+        when(transferenceRepository.findById(1L)).thenReturn(transferenceOptional);
+
+
+        transferenceService.transfer(transference);
+
+
+        verify(balanceRepository, times(4)).findByCustomerId(any(Long.class));
+        verify(balanceRepository, times(4)).save(any(Balance.class));
+        verify(transferenceRepository, times(1)).save(any(Transference.class));
+        verify(apiGateway, times(1)).authorize();
+        verify(apiGateway, times(1)).sendNotification();
+    }
+
+    @Test
+    void whenRefund_thenReturnVoid() {
+        Transference transference = new Transference(1L, 1L, 2L, 100.00, null);
+        Optional<Transference> transferenceOptional = Optional.of(transference);
+        Balance balance = new Balance(1L, 1L, 100.00);
+        Optional<Balance> balanceOptional = Optional.of(balance);
+
+        when(transferenceRepository.findById(1L)).thenReturn(transferenceOptional);
+
+        when(balanceRepository.findByCustomerId(1L)).thenReturn(balanceOptional);
+        when(balanceRepository.findByCustomerId(2L)).thenReturn(balanceOptional);
+
+        when(balanceRepository.save(any())).thenReturn(balance);
+
+        transferenceService.refund(1L);
+
+        verify(balanceRepository, times(2)).findByCustomerId(any(Long.class));
+        verify(balanceRepository, times(2)).save(any(Balance.class));
+        verify(transferenceRepository, times(1)).delete(any(Transference.class));
+    }
+
+    @Test
+    void whenSendNotificationReturnSuccess_ShouldTryOneTime() {
+        SendNotificationResponse response = mock(SendNotificationResponse.class);
+        when(response.getStatus()).thenReturn("success");
+        when(apiGateway.sendNotification()).thenReturn(response);
+
+        transferenceService.sendNotification();
+
+        verify(apiGateway, times(1)).sendNotification();
+    }
+
+    @Test
+    void whenSendNotificationReturnFailOneTime_ShouldRetryOneTime() {
+        SendNotificationResponse failResponse = mock(SendNotificationResponse.class);
+        when(failResponse.getStatus()).thenReturn("fail");
+
+        SendNotificationResponse successResponse = mock(SendNotificationResponse.class);
+        when(successResponse.getStatus()).thenReturn("success");
+
+        when(apiGateway.sendNotification())
+                .thenReturn(failResponse)
+                .thenReturn(successResponse);
+
+        transferenceService.sendNotification();
+
+        verify(apiGateway, times(2)).sendNotification();
+    }
+
+    @Test
+    void whenSendNotificationReturnFailMultipleTimes_ShouldRetryMultipleTimes() {
+        SendNotificationResponse failResponse = mock(SendNotificationResponse.class);
+        when(failResponse.getStatus()).thenReturn("fail");
+
+        SendNotificationResponse successResponse = mock(SendNotificationResponse.class);
+        when(successResponse.getStatus()).thenReturn("success");
+
+        when(apiGateway.sendNotification())
+                .thenReturn(failResponse)
+                .thenReturn(failResponse)
+                .thenReturn(failResponse)
+                .thenReturn(successResponse);
+
+        transferenceService.sendNotification();
+
+        verify(apiGateway, times(4)).sendNotification();
     }
 
     @Test

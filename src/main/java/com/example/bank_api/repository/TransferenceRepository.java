@@ -10,17 +10,17 @@ import java.util.List;
 public interface TransferenceRepository extends JpaRepository<Transference, Long> {
 
     @Query("""
-            SELECT * FROM transference AS t
-            WHERE t.payer_id = :customerId OR t.receiver_id = :customerId
-            ORDER BY t.created_at DESC
+            SELECT t FROM Transference t
+            WHERE t.payer = :customerId OR t.payee = :customerId
+            ORDER BY t.createdAt DESC
             """)
     List<Transference> findByCustomer(@Param("customerId") Long customerId);
 
     @Query("""
-            SELECT * FROM transference AS t WHERE t.payer_id = :firstCustomerId AND t.receiver_id = :secondCustomerId
-            UNION
-            SELECT * FROM transference AS t WHERE t.payer_id = :secondCustomerId AND t.receiver_id = :firstCustomerId
-            ORDER BY created_at DESC
+            SELECT t FROM Transference t
+            WHERE (t.payer = :firstCustomerId AND t.payee = :secondCustomerId)
+               OR (t.payer = :secondCustomerId AND t.payee = :firstCustomerId)
+            ORDER BY t.createdAt DESC
             """)
     List<Transference> findByCustomer(
             @Param("firstCustomerId") Long firstCustomerId,
@@ -28,8 +28,13 @@ public interface TransferenceRepository extends JpaRepository<Transference, Long
     );
 
     @Query("""
-            (SELECT COALESCE(SUM(t.amount), 0) FROM transference WHERE t.receiver_id = :customerId) -
-            (SELECT COALESCE(SUM(t.amount), 0) FROM transference WHERE t.payer_id = :customerId)
+            SELECT COALESCE(SUM(CASE WHEN t.payee = :customerId THEN t.value ELSE 0 END), 0) -
+                   COALESCE(SUM(CASE WHEN t.payer = :customerId THEN t.value ELSE 0 END), 0)
+            FROM Transference t
+            WHERE t.payer = :customerId OR t.payee = :customerId
             """)
     Double getBalance(@Param("customerId") Long customerId);
 }
+
+
+

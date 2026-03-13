@@ -9,24 +9,29 @@ import lombok.Setter;
 
 import java.sql.Date;
 
+@Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "transference")
 public class Transference {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
-    @JoinColumn
-    @OneToOne(mappedBy = "payer_id")
+    @Column(name = "payer")
     private Long payer;
+
     @NotNull
-    @JoinColumn
-    @OneToOne(mappedBy = "receiver_id")
+    @Column(name = "payee")
     private Long payee;
+
     @NotNull
+    @Column(name = "value")
     private Double value;
+
     @Column(name = "created_at")
     private Date createdAt;
 }

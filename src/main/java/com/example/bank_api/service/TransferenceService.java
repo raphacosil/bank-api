@@ -78,7 +78,7 @@ public class TransferenceService {
         transferenceRepository.delete(transference.get());
     }
 
-    private void sendNotification(){
+    void sendNotification(){
         String status;
         do {
             SendNotificationResponse response = apiGateway.sendNotification();
