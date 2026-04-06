@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 public interface TransferenceContract {
-    @PostMapping("/transfer")
+    @PostMapping("/")
     @Operation(summary = "Make a transference")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transference made successfully"),
@@ -25,7 +25,7 @@ public interface TransferenceContract {
             BindingResult bindingResult
     );
 
-    @DeleteMapping ("/{id}")
+    @DeleteMapping("/{id}/refund")
     @Operation(summary = "Refund a transference")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transference refunded successfully"),
