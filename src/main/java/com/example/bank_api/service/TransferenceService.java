@@ -9,17 +9,19 @@ import com.example.bank_api.model.Transference;
 import com.example.bank_api.repository.BalanceRepository;
 import com.example.bank_api.repository.CustomerRepository;
 import com.example.bank_api.repository.TransferenceRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class TransferenceService {
-    TransferenceRepository transferenceRepository;
-    BalanceRepository balanceRepository;
-    CustomerRepository customerRepository;
-    ApiGateway apiGateway;
+    private final TransferenceRepository transferenceRepository;
+    private final BalanceRepository balanceRepository;
+    private final CustomerRepository customerRepository;
+    private final ApiGateway apiGateway;
 
     public void transfer(Transference transference){
         if (transference.getPayer().equals(transference.getPayee()))
@@ -78,7 +80,7 @@ public class TransferenceService {
         transferenceRepository.delete(transference.get());
     }
 
-    void sendNotification(){
+    public void sendNotification(){
         String status;
         do {
             SendNotificationResponse response = apiGateway.sendNotification();

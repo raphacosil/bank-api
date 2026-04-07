@@ -2,14 +2,27 @@ spring:
   application:
     name: bank-api
 
-  data:
-    mongodb:
-      host: ${DATABASE_HOST}
-      port: ${DATABASE_PORT}
-      database: ${DATABASE_NAME}
-      username: ${DATABASE_USERNAME}
-      password: ${DATABASE_PASSWORD}
+  datasource:
+    url: jdbc:mysql://localhost:3306/meu_banco?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
-  external:
-    util-api:
-      base-url: https://util.devi.tools/api
+    jpa:
+      hibernate:
+        ddl-auto: validate
+      show-sql: false
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQLDialect
+          format_sql: true
+
+external:
+  util-api:
+    base-url: https://util.devi.tools/api
