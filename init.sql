@@ -4,13 +4,26 @@ USE banking;
 CREATE TABLE customer (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
+    is_business BOOLEAN NOT NULL,
+);
+
+CREATE TABLE credential (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     identifier VARCHAR(20) NOT NULL,
     email VARCHAR(150) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    is_business BOOLEAN NOT NULL,
+    customer_id BIGINT NOT NULL,
 
     CONSTRAINT uk_customer_identifier UNIQUE (identifier),
     CONSTRAINT uk_customer_email UNIQUE (email)
+
+    CONSTRAINT fk_credential_customer
+            FOREIGN KEY (customer_id)
+            REFERENCES customer(id)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE,
+
+        CONSTRAINT uk_credential_customer UNIQUE (customer_id)
 );
 
 CREATE TABLE balance (
