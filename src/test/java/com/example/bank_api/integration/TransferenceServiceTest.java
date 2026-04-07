@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 @Testcontainers
 @ActiveProfiles("test")
 @Transactional
-public class TransferenceTest {
+public class TransferenceServiceTest {
     @Autowired
     TransferenceRepository transferenceRepository;
     @Autowired
