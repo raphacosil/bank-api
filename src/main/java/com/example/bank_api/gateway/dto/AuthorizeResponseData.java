@@ -1,4 +1,4 @@
-package com.example.bank_api.unit.gateway.dto;
+package com.example.bank_api.gateway.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

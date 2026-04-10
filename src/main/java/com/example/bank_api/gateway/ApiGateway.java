@@ -1,7 +1,7 @@
-package com.example.bank_api.unit.gateway;
+package com.example.bank_api.gateway;
 
-import com.example.bank_api.unit.gateway.dto.AuthorizeResponse;
-import com.example.bank_api.unit.gateway.dto.SendNotificationResponse;
+import com.example.bank_api.gateway.dto.AuthorizeResponse;
+import com.example.bank_api.gateway.dto.SendNotificationResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

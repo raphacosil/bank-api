@@ -1,5 +1,6 @@
 package com.example.bank_api.unit.config;
 
+import com.example.bank_api.config.GlobalExceptionHandler;
 import com.example.bank_api.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

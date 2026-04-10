@@ -1,4 +1,4 @@
-package com.example.bank_api.unit.service;
+package com.example.bank_api.service;
 
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.model.Balance;

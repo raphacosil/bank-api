@@ -1,7 +1,7 @@
-package com.example.bank_api.unit.service;
+package com.example.bank_api.service;
 
-import com.example.bank_api.unit.gateway.ApiGateway;
-import com.example.bank_api.unit.gateway.dto.SendNotificationResponse;
+import com.example.bank_api.gateway.ApiGateway;
+import com.example.bank_api.gateway.dto.SendNotificationResponse;
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.exception.UnprocessableEntityException;
 import com.example.bank_api.model.Balance;

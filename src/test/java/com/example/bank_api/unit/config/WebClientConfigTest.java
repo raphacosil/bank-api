@@ -1,5 +1,6 @@
 package com.example.bank_api.unit.config;
 
+import com.example.bank_api.config.WebClientConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 

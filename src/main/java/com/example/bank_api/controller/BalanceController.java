@@ -1,8 +1,8 @@
-package com.example.bank_api.unit.controller;
+package com.example.bank_api.controller;
 
-import com.example.bank_api.unit.controller.contract.BalanceContract;
+import com.example.bank_api.controller.contract.BalanceContract;
 import com.example.bank_api.model.Balance;
-import com.example.bank_api.unit.service.BalanceService;
+import com.example.bank_api.service.BalanceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

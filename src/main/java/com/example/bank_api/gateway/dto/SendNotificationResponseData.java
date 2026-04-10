@@ -1,4 +1,4 @@
-package com.example.bank_api.unit.gateway.dto;
+package com.example.bank_api.gateway.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthorizeResponse {
-    String status;
-    AuthorizeResponseData data;
+public class SendNotificationResponseData {
+    String message;
 }

@@ -1,4 +1,4 @@
-package com.example.bank_api.unit.controller.contract;
+package com.example.bank_api.controller.contract;
 
 import com.example.bank_api.model.Customer;
 import com.example.bank_api.model.dto.GetCustomerDto;

@@ -1,4 +1,4 @@
-package com.example.bank_api.unit.controller.contract;
+package com.example.bank_api.controller.contract;
 
 import com.example.bank_api.model.Transference;
 import io.swagger.v3.oas.annotations.Operation;

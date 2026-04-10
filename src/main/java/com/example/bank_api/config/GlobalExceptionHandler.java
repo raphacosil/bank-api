@@ -1,4 +1,4 @@
-package com.example.bank_api.unit.config;
+package com.example.bank_api.config;
 
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.exception.InternalServerException;

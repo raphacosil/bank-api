@@ -1,10 +1,10 @@
-package com.example.bank_api.unit.controller;
+package com.example.bank_api.controller;
 
-import com.example.bank_api.unit.controller.contract.CustomerContract;
+import com.example.bank_api.controller.contract.CustomerContract;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Customer;
 import com.example.bank_api.model.dto.GetCustomerDto;
-import com.example.bank_api.unit.service.CustomerService;
+import com.example.bank_api.service.CustomerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

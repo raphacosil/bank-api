@@ -1,9 +1,9 @@
-package com.example.bank_api.unit.controller;
+package com.example.bank_api.controller;
 
-import com.example.bank_api.unit.controller.contract.TransferenceContract;
+import com.example.bank_api.controller.contract.TransferenceContract;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Transference;
-import com.example.bank_api.unit.service.TransferenceService;
+import com.example.bank_api.service.TransferenceService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

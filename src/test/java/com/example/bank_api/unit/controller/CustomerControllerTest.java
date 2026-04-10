@@ -1,9 +1,10 @@
 package com.example.bank_api.unit.controller;
 
+import com.example.bank_api.controller.CustomerController;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Customer;
 import com.example.bank_api.model.dto.GetCustomerDto;
-import com.example.bank_api.unit.service.CustomerService;
+import com.example.bank_api.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -5,6 +5,7 @@ import com.example.bank_api.model.Balance;
 import com.example.bank_api.model.Customer;
 import com.example.bank_api.repository.BalanceRepository;
 import com.example.bank_api.repository.CustomerRepository;
+import com.example.bank_api.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
