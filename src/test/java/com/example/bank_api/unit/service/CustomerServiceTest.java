@@ -32,7 +32,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenSave_ShouldSaveCustomerAndBalance_thenReturnVoid(){
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
 
         when(balanceRepository.save(any(Balance.class))).thenReturn(new Balance());
         when(customerRepository.save(customer)).thenReturn(customer);
@@ -45,7 +45,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenFindAll_thenReturnCustomerList() {
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
         List<Customer> customerList = List.of(customer);
         when(customerRepository.findAll()).thenReturn(customerList);
 
@@ -56,7 +56,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenFindById_thenReturnCustomer() {
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
 
         customerService.findById(1L);
@@ -75,7 +75,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenUpdate_ShouldFindByIdAndSave_thenReturnVoid(){
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
         Optional<Customer> customerOptional = Optional.of(customer);
         when(customerRepository.findById(1L)).thenReturn(customerOptional);
         when(customerRepository.save(customer)).thenReturn(customer);
@@ -88,7 +88,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenUpdate_ShouldFindByIdAndSave_thenThrowNotFoundException(){
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
         Optional<Customer> optional = Optional.empty();
         when(customerRepository.findById(1L)).thenReturn(optional);
 
@@ -100,7 +100,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenDelete_ShouldFindByIdAndDelete_thenReturnVoid(){
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
         Optional<Customer> customerOptional = Optional.of(customer);
         when(customerRepository.findById(1L)).thenReturn(customerOptional);
         doNothing().when(customerRepository).delete(customer);
@@ -113,7 +113,7 @@ public class CustomerServiceTest {
 
     @Test
     void whenUpdate_ShouldFindByIdAndDelete_thenThrowNotFoundException(){
-        Customer customer = new Customer(1L, "Name", "documentNumber", "email", "password", false);
+        Customer customer = new Customer(1L, "Name", false);
         Optional<Customer> optional = Optional.empty();
         when(customerRepository.findById(1L)).thenReturn(optional);
 

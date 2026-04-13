@@ -1,7 +1,6 @@
 package com.example.bank_api.controller.contract;
 
 import com.example.bank_api.model.Customer;
-import com.example.bank_api.model.dto.GetCustomerDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -54,7 +53,7 @@ public interface CustomerContract {
             @ApiResponse(responseCode = "200", description = "Customers retrieved successfully"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    ResponseEntity<List<GetCustomerDto>> findAll();
+    ResponseEntity<List<Customer>> findAll();
 
     @GetMapping("/{id}")
     @Operation(summary = "Get customer by id")
@@ -63,5 +62,5 @@ public interface CustomerContract {
             @ApiResponse(responseCode = "404", description = "Customer not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    ResponseEntity<GetCustomerDto> findById(@PathVariable(value = "id") Long customerId);
+    ResponseEntity<Customer> findById(@PathVariable(value = "id") Long customerId);
 }

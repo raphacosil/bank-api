@@ -3,7 +3,6 @@ package com.example.bank_api.unit.controller;
 import com.example.bank_api.controller.CustomerController;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Customer;
-import com.example.bank_api.model.dto.GetCustomerDto;
 import com.example.bank_api.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
@@ -44,9 +44,6 @@ public class CustomerControllerTest {
         customer = new Customer(
                 1L,
                 "name",
-                "documentNumber",
-                "email@email.com",
-                "password",
                 false
         );
     }
@@ -64,8 +61,8 @@ public class CustomerControllerTest {
     @Test
     void whenSave_ShouldReturn400() {
         when(bindingResult.hasErrors()).thenReturn(true);
-        when(bindingResult.getFieldError()).thenReturn(fieldError);
-        when(fieldError.getDefaultMessage()).thenReturn("Nome é obrigatório");
+        when(Objects.requireNonNull(bindingResult.getFieldError())).thenReturn(fieldError);
+        when(Objects.requireNonNull(fieldError.getDefaultMessage())).thenReturn("Nome é obrigatório");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () ->  customerController.save(customer, bindingResult));
 
@@ -86,8 +83,8 @@ public class CustomerControllerTest {
     @Test
     void whenUpdate_ShouldReturn400() {
         when(bindingResult.hasErrors()).thenReturn(true);
-        when(bindingResult.getFieldError()).thenReturn(fieldError);
-        when(fieldError.getDefaultMessage()).thenReturn("Nome é obrigatório");
+        when(Objects.requireNonNull(bindingResult.getFieldError())).thenReturn(fieldError);
+        when(Objects.requireNonNull(fieldError.getDefaultMessage())).thenReturn("Nome é obrigatório");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () ->  customerController.update(1L, customer, bindingResult));
 
@@ -107,23 +104,15 @@ public class CustomerControllerTest {
 
     @Test
     void whenFindById_shouldReturn200() {
-        GetCustomerDto getCustomerDto = new GetCustomerDto(
-                1L,
-                "name",
-                "documentNumber",
-                "email@email.com",
-                false
-        );
-        when(customerService.findById(1L)).thenReturn(getCustomerDto);
 
-        ResponseEntity<GetCustomerDto> response = customerController.findById(1L);
+        when(customerService.findById(1L)).thenReturn(customer);
+
+        ResponseEntity<Customer> response = customerController.findById(1L);
 
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1L, response.getBody().getId());
         assertEquals("name", response.getBody().getName());
-        assertEquals("documentNumber", response.getBody().getDocumentNumber());
-        assertEquals("email@email.com", response.getBody().getEmail());
         assertFalse(response.getBody().isBusiness());
 
         verify(customerService, times(1)).findById(1L);
@@ -131,25 +120,15 @@ public class CustomerControllerTest {
 
     @Test
     void whenFindAll_shouldReturn200() {
-        GetCustomerDto getCustomerDto = new GetCustomerDto(
-                1L,
-                "name",
-                "documentNumber",
-                "email@email.com",
-                false
-        );
-
-        List<GetCustomerDto> list = List.of(getCustomerDto);
+        List<Customer> list = List.of(customer);
         when(customerService.findAll()).thenReturn(list);
 
-        ResponseEntity<List<GetCustomerDto>> response = customerController.findAll();
+        ResponseEntity<List<Customer>> response = customerController.findAll();
 
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(1L, response.getBody().getFirst().getId());
         assertEquals("name", response.getBody().getFirst().getName());
-        assertEquals("documentNumber", response.getBody().getFirst().getDocumentNumber());
-        assertEquals("email@email.com", response.getBody().getFirst().getEmail());
         assertFalse(response.getBody().getFirst().isBusiness());
 
         verify(customerService, times(1)).findAll();

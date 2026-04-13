@@ -3,7 +3,6 @@ package com.example.bank_api.service;
 import com.example.bank_api.exception.NotFoundException;
 import com.example.bank_api.model.Balance;
 import com.example.bank_api.model.Customer;
-import com.example.bank_api.model.dto.GetCustomerDto;
 import com.example.bank_api.repository.BalanceRepository;
 import com.example.bank_api.repository.CustomerRepository;
 import org.springframework.beans.BeanUtils;
@@ -47,31 +46,17 @@ public class CustomerService {
         customerRepository.delete(customer.get());
     }
 
-    public List<GetCustomerDto> findAll(){
-        return mapCustomerListToGetCustomerDtoList(customerRepository.findAll());
+    public List<Customer> findAll(){
+        return customerRepository.findAll();
     }
 
-    public GetCustomerDto findById(Long customerId){
+    public Customer findById(Long customerId){
         Optional<Customer> customer = customerRepository.findById(customerId);
 
         if(customer.isEmpty()){
             throw new NotFoundException();
         }
 
-        return mapCustomerToGetCustomerDto(customer.get());
-    }
-
-    private GetCustomerDto mapCustomerToGetCustomerDto(Customer customer){
-        return new GetCustomerDto(
-                customer.getId(),
-                customer.getName(),
-                customer.getEmail(),
-                customer.getDocumentNumber(),
-                customer.isBusiness()
-        );
-    }
-
-    private List<GetCustomerDto> mapCustomerListToGetCustomerDtoList(List<Customer> customerList){
-        return customerList.stream().map(this::mapCustomerToGetCustomerDto).toList();
+        return customer.get();
     }
 }

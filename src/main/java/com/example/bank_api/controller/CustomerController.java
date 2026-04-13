@@ -3,7 +3,6 @@ package com.example.bank_api.controller;
 import com.example.bank_api.controller.contract.CustomerContract;
 import com.example.bank_api.exception.BadRequestException;
 import com.example.bank_api.model.Customer;
-import com.example.bank_api.model.dto.GetCustomerDto;
 import com.example.bank_api.service.CustomerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -53,12 +52,12 @@ public class CustomerController implements CustomerContract {
     }
 
     @Override
-    public ResponseEntity<List<GetCustomerDto>> findAll() {
+    public ResponseEntity<List<Customer>> findAll() {
         return ResponseEntity.ok(customerService.findAll());
     }
 
     @Override
-    public ResponseEntity<GetCustomerDto> findById(Long customerId) {
+    public ResponseEntity<Customer> findById(Long customerId) {
         return ResponseEntity.ok(customerService.findById(customerId));
     }
 }
