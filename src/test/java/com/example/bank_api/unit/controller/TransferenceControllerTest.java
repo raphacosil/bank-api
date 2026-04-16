@@ -1,10 +1,10 @@
 package com.example.bank_api.unit.controller;
 
 
-import com.example.bank_api.controller.TransferenceController;
-import com.example.bank_api.exception.BadRequestException;
-import com.example.bank_api.model.Transference;
-import com.example.bank_api.service.TransferenceService;
+import com.example.bank_api.boundary.controller.TransferenceController;
+import com.example.bank_api.config.exception.BadRequestException;
+import com.example.bank_api.domain.model.Transference;
+import com.example.bank_api.domain.service.TransferenceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

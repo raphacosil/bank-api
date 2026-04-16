@@ -1,7 +1,10 @@
 package com.example.bank_api.unit.config;
 
 import com.example.bank_api.config.GlobalExceptionHandler;
-import com.example.bank_api.exception.*;
+import com.example.bank_api.config.exception.BadRequestException;
+import com.example.bank_api.config.exception.InternalServerException;
+import com.example.bank_api.config.exception.NotFoundException;
+import com.example.bank_api.config.exception.UnprocessableEntityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package com.example.bank_api.unit.gateway;
 
-import com.example.bank_api.gateway.ApiGateway;
-import com.example.bank_api.gateway.dto.AuthorizeResponse;
+import com.example.bank_api.infra.gateway.ApiGateway;
+import com.example.bank_api.infra.gateway.dto.AuthorizeResponse;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterEach;

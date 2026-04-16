@@ -1,9 +1,9 @@
 package com.example.bank_api.unit.controller;
 
-import com.example.bank_api.controller.CustomerController;
-import com.example.bank_api.exception.BadRequestException;
-import com.example.bank_api.model.Customer;
-import com.example.bank_api.service.CustomerService;
+import com.example.bank_api.boundary.controller.CustomerController;
+import com.example.bank_api.config.exception.BadRequestException;
+import com.example.bank_api.domain.model.Customer;
+import com.example.bank_api.domain.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

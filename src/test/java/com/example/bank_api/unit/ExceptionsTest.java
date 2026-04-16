@@ -1,8 +1,8 @@
 package com.example.bank_api.unit;
-import com.example.bank_api.exception.BadRequestException;
-import com.example.bank_api.exception.InternalServerException;
-import com.example.bank_api.exception.NotFoundException;
-import com.example.bank_api.exception.UnprocessableEntityException;
+import com.example.bank_api.config.exception.BadRequestException;
+import com.example.bank_api.config.exception.InternalServerException;
+import com.example.bank_api.config.exception.NotFoundException;
+import com.example.bank_api.config.exception.UnprocessableEntityException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,11 +1,11 @@
 package com.example.bank_api.unit.service;
 
-import com.example.bank_api.exception.NotFoundException;
-import com.example.bank_api.model.Balance;
-import com.example.bank_api.model.Customer;
-import com.example.bank_api.repository.BalanceRepository;
-import com.example.bank_api.repository.CustomerRepository;
-import com.example.bank_api.service.CustomerService;
+import com.example.bank_api.config.exception.NotFoundException;
+import com.example.bank_api.domain.model.Balance;
+import com.example.bank_api.domain.model.Customer;
+import com.example.bank_api.infra.repository.BalanceRepository;
+import com.example.bank_api.infra.repository.CustomerRepository;
+import com.example.bank_api.domain.service.CustomerService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

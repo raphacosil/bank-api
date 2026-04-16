@@ -1,8 +1,8 @@
 package com.example.bank_api.unit.controller;
 
-import com.example.bank_api.controller.BalanceController;
-import com.example.bank_api.model.Balance;
-import com.example.bank_api.service.BalanceService;
+import com.example.bank_api.boundary.controller.BalanceController;
+import com.example.bank_api.domain.model.Balance;
+import com.example.bank_api.domain.service.BalanceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
