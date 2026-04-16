@@ -1,6 +1,6 @@
-# Bank API
+# Bank Transference API
 
-API REST de um sistema de transferências bancárias.
+REST API for a bank transfer system.
 
 ## Stack
 
@@ -8,30 +8,30 @@ API REST de um sistema de transferências bancárias.
 - Spring Boot 4.0.3
 - Spring Security + JWT (jjwt)
 - Spring Data JPA + MySQL 8
-- Spring WebFlux (WebClient para chamadas externas)
+- Spring WebFlux (WebClient for external calls)
 - Springdoc OpenAPI (Swagger UI)
 - Lombok
-- Testcontainers + JUnit 5 + H2 (testes)
+- Testcontainers + JUnit 5 + H2 (tests)
 - Docker Compose
 
-## Funcionalidades
+## Features
 
-- Cadastro de clientes (PF e PJ)
-- Autenticação com credenciais (email/identificador + senha)
-- Consulta e gestão de saldo
-- Transferências entre clientes com autorização via API externa (`https://util.devi.tools/api`)
-- Notificação de transferências
+- Customer registration (PF and PJ)
+- Authentication with credentials (email/identifier + password)
+- Balance consultation and management
+- Transfers between clients with authorization via external API (`https://util.devi.tools/api`)
+- Notification of transfers
 
-## Estrutura do projeto
+## Project structure
 
 ```
 src/main/java/com/example/bank_api/
-├── boundary/          # Controllers e contratos (DTOs de request/response)
-├── config/            # Configurações (WebClient, exception handler, security)
-├── domain/
-│   ├── model/         # Entidades JPA
-│   └── service/       # Regras de negócio (customer, balance, transference)
-└── infra/
-    ├── gateway/       # Integração com APIs externas (autorização, notificação)
-    └── repository/    # Repositórios Spring Data
+├── boundary/ # Controllers and contracts (request/response DTOs)
+├── config/ # Settings (WebClient, exception handler, security)
+├──domain/
+│ ├── model/ # JPA Entities
+│ └── service/ # Business rules (customer, balance, transfer)
+└── below/ 
+├── gateway/ # Integration with external APIs (authorization, notification) 
+└── repository/ # Spring Data Repositories
 ```
