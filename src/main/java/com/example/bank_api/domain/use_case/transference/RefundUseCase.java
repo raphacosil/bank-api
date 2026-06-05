@@ -1,4 +1,4 @@
-package com.example.bank_api.domain.service.transference;
+package com.example.bank_api.domain.use_case.transference;
 
 import com.example.bank_api.config.exception.NotFoundException;
 import com.example.bank_api.config.exception.UnprocessableEntityException;

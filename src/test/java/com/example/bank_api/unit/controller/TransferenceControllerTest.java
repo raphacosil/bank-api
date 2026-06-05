@@ -1,10 +1,9 @@
 package com.example.bank_api.unit.controller;
 
-
 import com.example.bank_api.boundary.controller.TransferenceController;
 import com.example.bank_api.config.exception.BadRequestException;
 import com.example.bank_api.domain.model.Transference;
-import com.example.bank_api.domain.service.TransferenceService;
+import com.example.bank_api.domain.use_case.transference.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +17,7 @@ import org.springframework.validation.FieldError;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +29,22 @@ import static org.mockito.Mockito.times;
 public class TransferenceControllerTest {
 
     @Mock
-    TransferenceService transferenceService;
+    TransferUseCase transferUseCase;
+
+    @Mock
+    RefundUseCase refundUseCase;
+
+    @Mock
+    FindAllTransferenceUseCase findAllTransferenceUseCase;
+
+    @Mock
+    FindTransferenceByIdUseCase findTransferenceByIdUseCase;
+
+    @Mock
+    FindTransferenceByCustomerUseCase findTransferenceByCustomerUseCase;
+
+    @Mock
+    FindTransferenceBetweenCustomersUseCase findTransferenceBetweenCustomersUseCase;
 
     @InjectMocks
     TransferenceController transferenceController;
@@ -47,7 +62,7 @@ public class TransferenceControllerTest {
         transference = new Transference(
                 1L,
                 2L,
-                3l,
+                3L,
                 100.00,
                 new Date(2000, 1, 1)
         );
@@ -55,7 +70,7 @@ public class TransferenceControllerTest {
 
     @Test
     void whenFindById_shouldReturn200() {
-        when(transferenceService.findById(1L)).thenReturn(transference);
+        when(findTransferenceByIdUseCase.execute(1L)).thenReturn(transference);
 
         ResponseEntity<Transference> response = transferenceController.findById(1L);
 
@@ -70,7 +85,7 @@ public class TransferenceControllerTest {
 
     @Test
     void whenFindAll_shouldReturn200() {
-        when(transferenceService.findAll()).thenReturn(List.of(transference));
+        when(findAllTransferenceUseCase.execute()).thenReturn(List.of(transference));
 
         ResponseEntity<List<Transference>> response = transferenceController.findAll();
 
@@ -84,7 +99,7 @@ public class TransferenceControllerTest {
 
     @Test
     void whenFindByCustomer_shouldReturn200() {
-        when(transferenceService.findByCustomer(2L)).thenReturn(List.of(transference));
+        when(findTransferenceByCustomerUseCase.execute(2L)).thenReturn(List.of(transference));
 
         ResponseEntity<List<Transference>> response = transferenceController.findByCustomer(2L);
 
@@ -98,7 +113,7 @@ public class TransferenceControllerTest {
 
     @Test
     void whenFindBetweenCustomers_shouldReturn200() {
-        when(transferenceService.findBetweenCustomers(2L, 3L)).thenReturn(List.of(transference));
+        when(findTransferenceBetweenCustomersUseCase.execute(2L, 3L)).thenReturn(List.of(transference));
 
         ResponseEntity<List<Transference>> response = transferenceController.findBetweenCustomers(2L, 3L);
 
@@ -112,7 +127,7 @@ public class TransferenceControllerTest {
 
     @Test
     void whenRefund_shouldReturn200() {
-        doNothing().when(transferenceService).refund(1L);
+        doNothing().when(refundUseCase).execute(1L);
 
         ResponseEntity<Void> response = transferenceController.refund(1L);
 
@@ -121,7 +136,7 @@ public class TransferenceControllerTest {
 
     @Test
     void whenTransfer_shouldReturn200() {
-        doNothing().when(transferenceService).transfer(transference);
+        doNothing().when(transferUseCase).execute(transference);
 
         ResponseEntity<Void> response = transferenceController.transfer(transference, bindingResult);
 
@@ -131,12 +146,12 @@ public class TransferenceControllerTest {
     @Test
     void whenTransfer_shouldReturn400() {
         when(bindingResult.hasErrors()).thenReturn(true);
-        when(bindingResult.getFieldError()).thenReturn(fieldError);
-        when(fieldError.getDefaultMessage()).thenReturn("Nome é obrigatório");
+        when(Objects.requireNonNull(bindingResult.getFieldError())).thenReturn(fieldError);
+        when(Objects.requireNonNull(fieldError.getDefaultMessage())).thenReturn("Nome é obrigatório");
 
         BadRequestException exception = assertThrows(BadRequestException.class, () -> transferenceController.transfer(transference, bindingResult));
 
         assertEquals("Bad request Nome é obrigatório", exception.getMessage());
-        verify(transferenceService, times(0)).transfer(any(Transference.class));
+        verify(transferUseCase, times(0)).execute(any(Transference.class));
     }
 }

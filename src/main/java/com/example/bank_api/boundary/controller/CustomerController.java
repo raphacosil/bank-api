@@ -3,7 +3,7 @@ package com.example.bank_api.boundary.controller;
 import com.example.bank_api.boundary.contract.CustomerContract;
 import com.example.bank_api.config.exception.BadRequestException;
 import com.example.bank_api.domain.model.Customer;
-import com.example.bank_api.domain.service.customer.*;
+import com.example.bank_api.domain.use_case.customer.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

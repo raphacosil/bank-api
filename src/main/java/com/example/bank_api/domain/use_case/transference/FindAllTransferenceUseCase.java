@@ -1,4 +1,4 @@
-package com.example.bank_api.domain.service.transference;
+package com.example.bank_api.domain.use_case.transference;
 
 import com.example.bank_api.domain.model.Transference;
 import com.example.bank_api.infra.repository.TransferenceRepository;

@@ -2,8 +2,8 @@ package com.example.bank_api.boundary.controller;
 
 import com.example.bank_api.boundary.contract.BalanceContract;
 import com.example.bank_api.domain.model.Balance;
-import com.example.bank_api.domain.service.balance.FindBalanceAmountByCustomer;
-import com.example.bank_api.domain.service.balance.FindBalanceByCustomer;
+import com.example.bank_api.domain.use_case.balance.FindBalanceAmountByCustomer;
+import com.example.bank_api.domain.use_case.balance.FindBalanceByCustomer;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

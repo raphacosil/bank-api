@@ -1,4 +1,4 @@
-package com.example.bank_api.domain.service.customer;
+package com.example.bank_api.domain.use_case.customer;
 
 import com.example.bank_api.config.exception.NotFoundException;
 import com.example.bank_api.domain.model.Customer;
@@ -10,17 +10,17 @@ import java.util.Optional;
 
 @Component
 @AllArgsConstructor
-public class DeleteCustomerUseCase {
+public class FindCustomerByIdUseCase {
 
     private final CustomerRepository customerRepository;
 
-    public void execute(Long customerId){
+    public Customer execute(Long customerId){
         Optional<Customer> customer = customerRepository.findById(customerId);
 
         if(customer.isEmpty()){
             throw new NotFoundException();
         }
 
-        customerRepository.delete(customer.get());
+        return customer.get();
     }
 }

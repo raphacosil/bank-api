@@ -12,7 +12,8 @@ import com.example.bank_api.domain.model.Transference;
 import com.example.bank_api.infra.repository.BalanceRepository;
 import com.example.bank_api.infra.repository.CustomerRepository;
 import com.example.bank_api.infra.repository.TransferenceRepository;
-import com.example.bank_api.domain.service.TransferenceService;
+import com.example.bank_api.domain.use_case.transference.RefundUseCase;
+import com.example.bank_api.domain.use_case.transference.TransferUseCase;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -38,7 +39,7 @@ import static org.mockito.Mockito.when;
 @Testcontainers
 @ActiveProfiles("test")
 @Transactional
-public class TransferenceServiceTest {
+public class TransferenceIntegrationTest {
     @Autowired
     TransferenceRepository transferenceRepository;
     @Autowired
@@ -48,20 +49,35 @@ public class TransferenceServiceTest {
 
     @MockitoBean
     ApiGateway apiGateway;
+
     @Autowired
-    TransferenceService transferenceService;
+    TransferUseCase transferUseCase;
+
+    @Autowired
+    RefundUseCase refundUseCase;
 
     Customer payer;
     Customer payee;
 
     @BeforeEach
     void setup() {
-        payer = customerRepository.save(
-                new Customer(null, "Payer", "12345678900", "payer@gmail.com", "password", false)
-        );
-        payee = customerRepository.save(
-                new Customer(null, "Payee", "09876543211", "payee@gmail.com", "password", false)
-        );
+        payer = Customer.builder()
+                .id(null)
+                .name("name")
+                .isBusiness(false)
+                .documentNumber("12345678900")
+                .email("payer@gmail.com")
+                .build();
+        customerRepository.save(payer);
+
+        payee = Customer.builder()
+                .id(null)
+                .name("name")
+                .isBusiness(false)
+                .documentNumber("09876543211")
+                .email("payee@gmail.com")
+                .build();
+        customerRepository.save(payee);
 
         balanceRepository.save(new Balance(null, payer.getId(), 100.00));
         balanceRepository.save(new Balance(null, payee.getId(), 100.00));
@@ -92,7 +108,7 @@ public class TransferenceServiceTest {
     void whenTransferAndNotEnoughBalance_thenThrowUnprocessableEntityException() {
         Transference transference = new Transference(null, payer.getId(), payee.getId(), 150.00, null);
 
-        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> transferenceService.transfer(transference));
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> transferUseCase.execute(transference));
 
         Optional<Double> payerBalance = balanceRepository.findAmountByCustomerId(payer.getId());
         Optional<Double> payeeBalance = balanceRepository.findAmountByCustomerId(payee.getId());
@@ -116,7 +132,7 @@ public class TransferenceServiceTest {
 
         Transference transference = new Transference(null, payer.getId(), payee.getId(), 100.00, null);
 
-        transferenceService.transfer(transference);
+        transferUseCase.execute(transference);
 
         Optional<Double> payerBalance = balanceRepository.findAmountByCustomerId(payer.getId());
         Optional<Double> payeeBalance = balanceRepository.findAmountByCustomerId(payee.getId());
@@ -138,7 +154,7 @@ public class TransferenceServiceTest {
 
         Transference transference = new Transference(null, payer.getId(), payee.getId(), 100.00, null);
 
-        transferenceService.transfer(transference);
+        transferUseCase.execute(transference);
 
         Optional<Double> payerBalance = balanceRepository.findAmountByCustomerId(payer.getId());
         Optional<Double> payeeBalance = balanceRepository.findAmountByCustomerId(payee.getId());
@@ -151,7 +167,7 @@ public class TransferenceServiceTest {
 
     @Test
     void whenRefundAndTransferenceEmpty_thenThrowNotFoundException() {
-        assertThrows(NotFoundException.class, () -> transferenceService.refund(2L));
+        assertThrows(NotFoundException.class, () -> refundUseCase.execute(2L));
     }
 
     @Test
@@ -160,7 +176,7 @@ public class TransferenceServiceTest {
 
         transferenceRepository.save(transference);
 
-        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> transferenceService.refund(1L));
+        UnprocessableEntityException exception = assertThrows(UnprocessableEntityException.class, () -> refundUseCase.execute(1L));
 
         assertEquals("Unprocessable entity Not enough balance", exception.getMessage());
     }
@@ -176,11 +192,11 @@ public class TransferenceServiceTest {
 
         Transference transference = new Transference(null, payer.getId(), payee.getId(), 100.00, null);
 
-        transferenceService.transfer(transference);
+        transferUseCase.execute(transference);
 
         Long id = transferenceRepository.findAll().getFirst().getId();
 
-        transferenceService.refund(id);
+        refundUseCase.execute(id);
 
         Optional<Double> payerBalance = balanceRepository.findAmountByCustomerId(payer.getId());
         Optional<Double> payeeBalance = balanceRepository.findAmountByCustomerId(payee.getId());

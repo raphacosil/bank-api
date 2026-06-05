@@ -3,7 +3,7 @@ package com.example.bank_api.unit.controller;
 import com.example.bank_api.boundary.controller.CustomerController;
 import com.example.bank_api.config.exception.BadRequestException;
 import com.example.bank_api.domain.model.Customer;
-import com.example.bank_api.domain.service.CustomerService;
+import com.example.bank_api.domain.use_case.customer.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CustomerControllerTest {
 
     @Mock
-    CustomerService customerService;
+    SaveCustomerUseCase saveCustomerUseCase;
+
+    @Mock
+    UpdateCustomerUseCase updateCustomerUseCase;
+
+    @Mock
+    DeleteCustomerUseCase deleteCustomerUseCase;
+
+    @Mock
+    FindAllCustomersUseCase findAllCustomersUseCase;
+
+    @Mock
+    FindCustomerByIdUseCase findCustomerByIdUseCase;
 
     @InjectMocks
     CustomerController customerController;
@@ -41,21 +53,21 @@ public class CustomerControllerTest {
 
     @BeforeEach
     void setUp() {
-        customer = new Customer(
-                1L,
-                "name",
-                false
-        );
+        customer = Customer.builder()
+                .id(1L)
+                .name("name")
+                .isBusiness(false)
+                .build();
     }
 
     @Test
     void whenSave_ShouldReturn201() {
-        doNothing().when(customerService).save(customer);
+        doNothing().when(saveCustomerUseCase).execute(customer);
 
         ResponseEntity<Void> response = customerController.save(customer, bindingResult);
 
         assertEquals(HttpStatusCode.valueOf(201), response.getStatusCode());
-        verify(customerService, times(1)).save (customer);
+        verify(saveCustomerUseCase, times(1)).execute(customer);
     }
 
     @Test
@@ -67,17 +79,17 @@ public class CustomerControllerTest {
         BadRequestException exception = assertThrows(BadRequestException.class, () ->  customerController.save(customer, bindingResult));
 
         assertEquals("Bad request Nome é obrigatório", exception.getMessage());
-        verify(customerService, times(0)).save (customer);
+        verify(saveCustomerUseCase, times(0)).execute(customer);
     }
 
     @Test
     void whenUpdate_ShouldReturn200() {
-        doNothing().when(customerService).update(1L, customer);
+        doNothing().when(updateCustomerUseCase).execute(1L, customer);
 
         ResponseEntity<Void> response = customerController.update(1L, customer, bindingResult);
 
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
-        verify(customerService, times(1)).update (1L, customer);
+        verify(updateCustomerUseCase, times(1)).execute(1L, customer);
     }
 
     @Test
@@ -89,23 +101,23 @@ public class CustomerControllerTest {
         BadRequestException exception = assertThrows(BadRequestException.class, () ->  customerController.update(1L, customer, bindingResult));
 
         assertEquals("Bad request Nome é obrigatório", exception.getMessage());
-        verify(customerService, times(0)).update(1L, customer);
+        verify(updateCustomerUseCase, times(0)).execute(1L, customer);
     }
 
     @Test
     void whenDelete_ShouldReturn200() {
-        doNothing().when(customerService).delete(1L);
+        doNothing().when(deleteCustomerUseCase).execute(1L);
 
         ResponseEntity<Void> response = customerController.delete(1L);
 
         assertEquals(HttpStatusCode.valueOf(200), response.getStatusCode());
-        verify(customerService, times(1)).delete(1L);
+        verify(deleteCustomerUseCase, times(1)).execute(1L);
     }
 
     @Test
     void whenFindById_shouldReturn200() {
 
-        when(customerService.findById(1L)).thenReturn(customer);
+        when(findCustomerByIdUseCase.execute(1L)).thenReturn(customer);
 
         ResponseEntity<Customer> response = customerController.findById(1L);
 
@@ -115,13 +127,13 @@ public class CustomerControllerTest {
         assertEquals("name", response.getBody().getName());
         assertFalse(response.getBody().isBusiness());
 
-        verify(customerService, times(1)).findById(1L);
+        verify(findCustomerByIdUseCase, times(1)).execute(1L);
     }
 
     @Test
     void whenFindAll_shouldReturn200() {
         List<Customer> list = List.of(customer);
-        when(customerService.findAll()).thenReturn(list);
+        when(findAllCustomersUseCase.execute()).thenReturn(list);
 
         ResponseEntity<List<Customer>> response = customerController.findAll();
 
@@ -131,6 +143,6 @@ public class CustomerControllerTest {
         assertEquals("name", response.getBody().getFirst().getName());
         assertFalse(response.getBody().getFirst().isBusiness());
 
-        verify(customerService, times(1)).findAll();
+        verify(findAllCustomersUseCase, times(1)).execute();
     }
 }

@@ -1,4 +1,4 @@
-package com.example.bank_api.domain.service.customer;
+package com.example.bank_api.domain.use_case.customer;
 
 import com.example.bank_api.domain.model.Customer;
 import com.example.bank_api.infra.repository.CustomerRepository;

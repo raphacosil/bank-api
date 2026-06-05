@@ -3,7 +3,7 @@ package com.example.bank_api.boundary.controller;
 import com.example.bank_api.boundary.contract.TransferenceContract;
 import com.example.bank_api.config.exception.BadRequestException;
 import com.example.bank_api.domain.model.Transference;
-import com.example.bank_api.domain.service.transference.*;
+import com.example.bank_api.domain.use_case.transference.*;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
