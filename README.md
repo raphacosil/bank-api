@@ -31,7 +31,6 @@ src/main/java/com/example/bank_api/
 ├──domain/
 │ ├── model/ # JPA Entities
 │ └── service/ # Business rules (customer, balance, transfer)
-└── below/ 
 ├── gateway/ # Integration with external APIs (authorization, notification) 
 └── repository/ # Spring Data Repositories
 ```
